@@ -15,11 +15,15 @@ $(window).bind('mousewheel DOMMouseScroll', function (event) {
     if (page === 1) {
       if (scroll === true) {
         scroll = false;
-        firstSectionAnimate();
-        // scrollDown();
+        firstToSecond();
         page++;
         scroll = true;
       }
+    } else if (page === 2) {
+      scroll = false;
+      secondToThird();
+      page++;
+      scroll = true;
     }
   }
 });
@@ -40,8 +44,9 @@ function scrollUp() {
   });
 }
 
-function firstSectionAnimate() {
-  $("#firstSection").css({
+async function firstToSecond() {
+  let firstSection = $("#firstSection");
+    firstSection.css({
     perspective: "224px",
     'transform-style': "preserve-3d",
     transform: "rotateX(-90deg)",
@@ -52,4 +57,37 @@ function firstSectionAnimate() {
   $('html, body').animate({
     scrollTop: $("#secondSection div.container").offset().top - 20
   }, 1500);
+
+  await lettersAnimate($("#secondSection div.container h2 b")).then();
+
+  firstSection.css({
+    perspective: "224px",
+    'transform-style': "preserve-3d",
+    transform: "rotateX(0deg)",
+    "transform-origin": "50% 0 0",
+    opacity: 1,
+    transition: "0s"
+  });
+}
+
+function secondToThird() {
+  $('html, body').animate({
+    scrollTop: $("#awards div.container").offset().top - 20
+  }, 1000);
+  lettersAnimate($("#awards div.container h2 b")).then();
+}
+
+async function lettersAnimate(container) {
+  for (let i = 0; i < container.length; i++) {
+    $(container[i]).css({color: 'grey'});
+  }
+  await sleep(250);
+  for (let i = 0; i < container.length; i++) {
+    $(container[i]).css({color: 'white', transition: '.3s'});
+    await sleep(150);
+  }
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
